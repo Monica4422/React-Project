@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Procurement Summary", "type": "Procurement" },
+  { "id": 2, "name": "Vendor Risk Review", "type": "Vendor" },
+  { "id": 3, "name": "Compliance Snapshot", "type": "Compliance" }
+]

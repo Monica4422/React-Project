@@ -1,0 +1,6 @@
+[
+  { "name": "Vendor 1", "level": "Low", "score": 25 },
+  { "name": "Vendor 2", "level": "Medium", "score": 55 },
+  { "name": "Vendor 3", "level": "High", "score": 82 },
+  { "name": "Vendor 4", "level": "Critical", "score": 95 }
+]

@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name": "Northwind Supplies", "category": "IT", "status": "Active", "risk": "Medium", "score": 72 },
+  { "id": 2, "name": "BluePeak Logistics", "category": "Operations", "status": "Monitoring", "risk": "High", "score": 88 },
+  { "id": 3, "name": "Evergreen Foods", "category": "Facilities", "status": "Active", "risk": "Low", "score": 32 }
+]

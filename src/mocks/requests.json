@@ -1,0 +1,5 @@
+[
+  { "id": "PR-1001", "title": "Cloud Storage Renewal", "department": "IT", "status": "Pending", "amount": 42000, "owner": "Ava Brooks", "priority": "High" },
+  { "id": "PR-1002", "title": "Security Audit Services", "department": "Security", "status": "Approved", "amount": 18000, "owner": "Noah Singh", "priority": "Medium" },
+  { "id": "PR-1003", "title": "Office Workspace Setup", "department": "Operations", "status": "Rejected", "amount": 9500, "owner": "Mina Patel", "priority": "Low" }
+]
