@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { Grid, Card, CardContent, Typography, Box, Stack, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from 'recharts';
 import PageHeader from '../components/PageHeader';
 import StatCard from '../components/StatCard';
@@ -42,9 +43,30 @@ const DashboardPage = () => {
     { name: 'Facilities', value: 15000 }
   ], []);
 
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+
+  const ctAs = useMemo(
+    () => [
+      { title: 'Create Request', path: '/procurement', roles: ['Administrator', 'Procurement Manager', 'Employee'] },
+      { title: 'Approval Queue', path: '/approval', roles: ['Administrator', 'Procurement Manager'] },
+      { title: 'Audit Center', path: '/audit', roles: ['Administrator', 'Auditor'] }
+    ].filter((cta) => cta.roles.includes(user?.role)),
+    [user]
+  );
+
   return (
     <Box>
       <PageHeader title="Executive Dashboard" subtitle="A unified view of governance, procurement, risk and compliance activity" />
+      {ctAs.length > 0 && (
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 3 }}>
+          {ctAs.map((cta) => (
+            <Button key={cta.path} variant="outlined" onClick={() => navigate(cta.path)}>
+              {cta.title}
+            </Button>
+          ))}
+        </Stack>
+      )}
       <Grid container spacing={3}>
         {metrics.map((item) => (
           <Grid item xs={12} sm={6} md={3} key={item.title}>

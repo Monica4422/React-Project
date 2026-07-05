@@ -10,7 +10,20 @@ const procurementSlice = createSlice({
     status: 'idle',
     error: null
   },
-  reducers: {},
+  reducers: {
+    addRequest: (state, action) => {
+      state.items.unshift(action.payload);
+    },
+    updateRequestStatus: (state, action) => {
+      const { id, status, reviewer } = action.payload;
+      const item = state.items.find((request) => request.id === id);
+      if (item) {
+        item.status = status;
+        item.reviewer = reviewer;
+        item.lastUpdated = new Date().toISOString();
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchProcurementData.pending, (state) => {
       state.status = 'loading';
@@ -26,4 +39,5 @@ const procurementSlice = createSlice({
   }
 });
 
+export const { addRequest, updateRequestStatus } = procurementSlice.actions;
 export default procurementSlice.reducer;

@@ -15,6 +15,7 @@ const VendorDetailPage = lazy(() => import('../features/VendorDetailPage'));
 const RiskPage = lazy(() => import('../features/RiskPage'));
 const CompliancePage = lazy(() => import('../features/CompliancePage'));
 const AuditPage = lazy(() => import('../features/AuditPage'));
+const ApprovalQueuePage = lazy(() => import('../features/ApprovalQueuePage'));
 const ReportsPage = lazy(() => import('../features/ReportsPage'));
 const SettingsPage = lazy(() => import('../features/SettingsPage'));
 const NotFoundPage = lazy(() => import('../features/NotFoundPage'));
@@ -38,7 +39,8 @@ const AppRoutes = () => {
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="procurement" element={<ProtectedRoute allowedRoles={['Administrator', 'Procurement Manager']}><ProcurementPage /></ProtectedRoute>} />
+          <Route path="procurement" element={<ProtectedRoute><ProcurementPage /></ProtectedRoute>} />
+          <Route path="approval" element={<ProtectedRoute allowedRoles={['Administrator', 'Procurement Manager']}><ApprovalQueuePage /></ProtectedRoute>} />
           <Route path="vendors" element={<VendorsPage />} />
           <Route path="vendors/:id" element={<VendorDetailPage />} />
           <Route path="risk" element={<RiskPage />} />

@@ -1,4 +1,4 @@
-import authReducer, { loginUser } from './authSlice';
+import authReducer, { loginUser } from '../store/slices/authSlice';
 
 describe('auth slice', () => {
   it('handles login success', () => {

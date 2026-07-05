@@ -8,11 +8,14 @@ import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const items = [
   { label: 'Dashboard', path: '/dashboard', icon: <DashboardRoundedIcon /> },
   { label: 'Procurement', path: '/procurement', icon: <ShoppingCartRoundedIcon /> },
+  { label: 'Approval Queue', path: '/approval', icon: <ApprovalRoundedIcon />, roles: ['Administrator', 'Procurement Manager'] },
   { label: 'Vendors', path: '/vendors', icon: <BusinessRoundedIcon /> },
   { label: 'Risk', path: '/risk', icon: <WarningRoundedIcon /> },
   { label: 'Compliance', path: '/compliance', icon: <FactCheckRoundedIcon /> },
@@ -24,6 +27,7 @@ const items = [
 const Sidebar = memo(function Sidebar({ open }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector((state) => state.auth.user);
 
   const handleNavigation = useCallback(
     (path) => {
@@ -32,7 +36,10 @@ const Sidebar = memo(function Sidebar({ open }) {
     [navigate]
   );
 
-  const visibleItems = useMemo(() => items, []);
+  const visibleItems = useMemo(
+    () => items.filter((item) => !item.roles || item.roles.includes(user?.role)),
+    [user]
+  );
 
   return (
     <Drawer variant="persistent" open={open} sx={{ '& .MuiDrawer-paper': { width: 240, boxSizing: 'border-box', bgcolor: '#0f172a', color: 'white' } }}>

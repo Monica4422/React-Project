@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Typography, Stack, Menu, MenuItem } from '@mui/material';
+import React, { memo, useCallback, useMemo, useEffect, useState } from 'react';
+import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Typography, Stack, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -10,6 +10,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { toggleSidebar, toggleTheme } from '../store/slices/uiSlice';
 import { logoutUser } from '../store/slices/authSlice';
+import { fetchNotifications, markAllAsRead } from '../store/slices/notificationSlice';
 
 const Layout = memo(function Layout() {
   const dispatch = useDispatch();
@@ -18,7 +19,14 @@ const Layout = memo(function Layout() {
   const sidebarOpen = useSelector((state) => state.ui.sidebarOpen);
   const themeMode = useSelector((state) => state.ui.themeMode);
   const notifications = useSelector((state) => state.notification.items);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [notifAnchorEl, setNotifAnchorEl] = useState(null);
+  const [searchAnchorEl, setSearchAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
 
   const handleOpenMenu = useCallback((event) => setAnchorEl(event.currentTarget), []);
   const handleCloseMenu = useCallback(() => setAnchorEl(null), []);
@@ -28,8 +36,46 @@ const Layout = memo(function Layout() {
     dispatch(logoutUser());
     navigate('/login');
   }, [dispatch, navigate]);
+  const handleOpenNotifications = useCallback(
+    (event) => {
+      setNotifAnchorEl(event.currentTarget);
+      dispatch(markAllAsRead());
+    },
+    [dispatch]
+  );
+  const handleCloseNotifications = useCallback(() => setNotifAnchorEl(null), []);
+  const handleOpenSearch = useCallback((event) => setSearchAnchorEl(event.currentTarget), []);
+  const handleCloseSearch = useCallback(() => {
+    setSearchAnchorEl(null);
+    setSearchQuery('');
+  }, []);
+  const handleSearchNavigate = useCallback(
+    (path) => {
+      navigate(path);
+      handleCloseSearch();
+    },
+    [navigate, handleCloseSearch]
+  );
 
   const unreadCount = useMemo(() => notifications.filter((item) => !item.read).length, [notifications]);
+  const pageLinks = useMemo(
+    () => [
+      { title: 'Dashboard', path: '/dashboard' },
+      { title: 'Procurement', path: '/procurement' },
+      { title: 'Vendors', path: '/vendors' },
+      { title: 'Risk', path: '/risk' },
+      { title: 'Compliance', path: '/compliance' },
+      { title: 'Audit', path: '/audit' },
+      { title: 'Reports', path: '/reports' },
+      { title: 'Settings', path: '/settings' }
+    ],
+    []
+  );
+  const searchResults = useMemo(
+    () =>
+      pageLinks.filter((page) => page.title.toLowerCase().includes(searchQuery.toLowerCase())),
+    [pageLinks, searchQuery]
+  );
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: '#f8fafc' }}>
@@ -44,13 +90,13 @@ const Layout = memo(function Layout() {
               Enterprise Governance, Risk, Compliance & Procurement Platform
             </Typography>
             <Stack direction="row" spacing={1} alignItems="center">
-              <IconButton>
+              <IconButton onClick={handleOpenSearch}>
                 <SearchRoundedIcon />
               </IconButton>
               <IconButton onClick={handleToggleTheme}>
                 {themeMode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
               </IconButton>
-              <IconButton>
+              <IconButton onClick={handleOpenNotifications}>
                 <Badge badgeContent={unreadCount} color="error">
                   <NotificationsRoundedIcon />
                 </Badge>
@@ -59,6 +105,45 @@ const Layout = memo(function Layout() {
                 {user?.name?.charAt(0) || 'U'}
               </Avatar>
             </Stack>
+            <Menu anchorEl={searchAnchorEl} open={Boolean(searchAnchorEl)} onClose={handleCloseSearch} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+              <Box sx={{ p: 2, minWidth: 280, maxWidth: 320 }}>
+                <TextField
+                  fullWidth
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search pages..."
+                  size="small"
+                  InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> }}
+                />
+                {searchResults.length > 0 ? (
+                  searchResults.map((page) => (
+                    <MenuItem key={page.path} onClick={() => handleSearchNavigate(page.path)}>
+                      {page.title}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No pages found</MenuItem>
+                )}
+              </Box>
+            </Menu>
+            <Menu anchorEl={notifAnchorEl} open={Boolean(notifAnchorEl)} onClose={handleCloseNotifications} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+              {notifications.length === 0 ? (
+                <MenuItem disabled>No notifications</MenuItem>
+              ) : (
+                notifications.map((notification) => (
+                  <MenuItem key={notification.id} onClick={handleCloseNotifications}>
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: notification.read ? 400 : 700 }}>
+                        {notification.title}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {notification.description}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))
+              )}
+            </Menu>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
               <MenuItem disabled>{user?.name}</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
