@@ -1,7 +1,7 @@
 [
-  { "id": 1, "name": "Ava Brooks", "role": "Administrator", "username": "admin", "password": "admin123", "token": "token-admin" },
-  { "id": 2, "name": "Noah Singh", "role": "Procurement Manager", "username": "manager", "password": "manager123", "token": "token-manager" },
-  { "id": 3, "name": "Mina Patel", "role": "Compliance Officer", "username": "compliance", "password": "compliance123", "token": "token-compliance" },
-  { "id": 4, "name": "Liam Chen", "role": "Auditor", "username": "auditor", "password": "auditor123", "token": "token-auditor" },
-  { "id": 5, "name": "Emma White", "role": "Employee", "username": "employee", "password": "employee123", "token": "token-employee" }
+  { "id": 1, "name": "Alice", "role": "Administrator", "username": "admin", "password": "admin123", "token": "token-admin" },
+  { "id": 2, "name": "Bob", "role": "Procurement Manager", "username": "manager", "password": "manager123", "token": "token-manager" },
+  { "id": 3, "name": "Mike", "role": "Compliance Officer", "username": "compliance", "password": "compliance123", "token": "token-compliance" },
+  { "id": 4, "name": "Lia", "role": "Auditor", "username": "auditor", "password": "auditor123", "token": "token-auditor" },
+  { "id": 5, "name": "Emma", "role": "Employee", "username": "employee", "password": "employee123", "token": "token-employee" }
 ]
